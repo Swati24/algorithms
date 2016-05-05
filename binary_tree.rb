@@ -119,6 +119,35 @@ class BinaryTree
     self.inorder
   end
 
+  def height_balanced?(node = self.root)
+    if node.nil? or (node.right.nil? and node.left.nil?)
+      return true
+    elsif ((height(node.left) - height(node.right)).abs <= 1)
+      (height_balanced?(node.left) and height_balanced?(node.right))
+    else
+      return false
+    end
+  end
+
+
+  def root_leaf_path_equals_sum(sum, node = self.root)
+    p sum
+    if node.nil?
+      return 0
+    end
+    
+    sum = sum - node.data
+    if (sum) == 0
+      p 'lalalalalalala'
+      p node.data
+      return true
+    else
+      lsum = root_leaf_path_equals_sum(sum, node.left)
+      rsum = root_leaf_path_equals_sum(sum, node.right)
+    end
+    
+  end
+
   def self.create_dummy
     b = BinaryTree.new 1
     root = b.root
