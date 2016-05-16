@@ -145,8 +145,126 @@ class BinaryTree
       lsum = root_leaf_path_equals_sum(sum, node.left)
       rsum = root_leaf_path_equals_sum(sum, node.right)
     end
-    
   end
+
+  def print_root_to_node_path(node = self.root, paths_array = [])
+    if node.nil?
+      return
+    end
+
+    paths_array << node.data
+
+    if node.left.nil? and node.right.nil?
+      printArray(paths_array)
+    else
+      print_root_to_node_path(node.left, paths_array.dup)
+      print_root_to_node_path(node.right, paths_array.dup)
+    end
+
+  end
+
+  def printArray(paths_array)
+    (0..paths_array.length).each do |index|
+      p paths_array[index]
+    end
+  end
+
+  def generate_double_tree(node = self.root)
+    if node.left
+      generate_double_tree(node.left)
+    end
+
+    if node.right
+      generate_double_tree(node.right)
+    end
+
+    temp = Node.new node.data
+
+    unless node.left.nil?
+      temp.left = node.left
+      node.left = temp
+    else
+      node.left = temp
+    end
+  end
+
+  def get_max_width(hash = {}, node = self.root, level = 1)
+    if node.nil?
+      return 
+    end
+
+    hash[level] = hash[level].nil? ? 1 : hash[level] + 1
+    level += 1
+    
+    get_max_width(hash, node.left, level)
+    get_max_width(hash, node.right, level)
+
+    hash.values.max
+  end
+
+  def mirror(node = self.root)
+    if node.nil?
+      return
+    end
+
+    mirror(node.left)
+    mirror(node.right)
+
+    temp = node.left
+    node.left = node.right
+    node.right = temp
+  end
+
+  def get_level_of_node(value, node = self.root, level = 1)
+    if node.nil?
+      return 0
+    end
+
+    if node.data == value
+      return level 
+    end
+
+    downlevel = get_level_of_node(value, node.left, level + 1)
+    if downlevel != 0
+      return downlevel
+    end
+    downlevel = get_level_of_node(value, node.right, level + 1)
+    return downlevel
+  end
+
+  def print_ancestors(value, node = self.root, ancestors_path = [])
+    if node.nil?
+      return []
+    end
+
+    if node.data == value
+      return ancestors_path
+    end
+    ancestors_path << node.data
+
+    s_ancestors_path = print_ancestors(value, node.left, ancestors_path.dup)
+    unless s_ancestors_path.empty?
+      return s_ancestors_path
+    end
+    s_ancestors_path = print_ancestors(value, node.right, ancestors_path.dup)
+    return s_ancestors_path
+  end
+
+  def is_sum_tree?(node = self.root, sum = 0)
+    if node.nil?
+      return 0
+    else
+      p node.data
+      p ltree = is_sum_tree?(node.left, node.data)
+      p rtree = is_sum_tree?(node.right, node.data)
+    end
+
+      # sum == node.data and (is_sum_tree?(node.left, sum) and is_sum_tree?(node.right, sum))
+      # p sum = sum + node.data
+      # p node.data
+      # p '-----------'
+  end
+
 
   def self.create_dummy
     b = BinaryTree.new 1
