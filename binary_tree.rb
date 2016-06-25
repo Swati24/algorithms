@@ -341,8 +341,56 @@ class BinaryTree
     hash.select { |k, v| v == max}
   end
 
+  # TODO
   def is_foldable
 
+  end
+
+  def nodes_at_distance(distance, node = self.root, level = 0)
+    if node.nil?
+      return
+    end
+
+    level += 1
+
+    if level == distance
+      p node.data
+    end
+
+    nodes_at_distance(distance, node.left, level)
+    nodes_at_distance(distance, node.right, level)
+  end
+
+  def key_level(key, node = self.root, level = 0)
+    if node.nil?
+      return
+    end
+
+    level += 1
+
+    if node.data == key
+      p level
+    else
+      key_level(key, node.left, level)
+      key_level(key, node.right, level)
+    end
+  end
+
+  def print_ancestors(key, node = self.root, array = [], level = 0)
+    if node.nil?
+      return
+    end
+    
+    array[level] = node.data
+    level += 1
+  
+    if node.data == key
+      array.each_with_index { |element, index| p element if index < (level - 1)}
+      return
+    else
+      print_ancestors(key, node.left, array, level)
+      print_ancestors(key, node.right, array, level)
+    end
   end
 
 
