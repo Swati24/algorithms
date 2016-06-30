@@ -16,8 +16,12 @@ class BinaryTree
 
   attr_accessor :root
 
-  def initialize(data)
-    @root = Node.new data
+  def initialize(data, node)
+    if node.nil?
+      @root = Node.new data
+    else
+      @root = node
+    end
   end
 
 
@@ -408,6 +412,61 @@ class BinaryTree
     vertical_sum(node.right, hash, index + 1)
 
     return Hash[hash.sort_by{|k,v| k}].values
+  end
+
+  def max_sum_root_to_leaf_path(array = [], index = 0, node = self.root, max_sum = 0)
+    if node.nil?
+      return
+    end
+
+    #return if !array[index].nil? and array[index] > node.data
+    
+    array[index] = node.data
+    
+    p index
+    sum = array[0..index].inject(:+)     
+    p max_sum = max_sum < sum ? sum : max_sum
+
+    p "--------"
+    index += 1
+
+    max_sum_root_to_leaf_path(array, index, node.left, max_sum)
+    max_sum_root_to_leaf_path(array, index, node.right, max_sum)
+
+    return array
+  end
+
+
+  def self.build_special_tree_from_inorder_traversal(inorder_array, start_index = 0, end_index = inorder_array.length - 1)
+    if end_index < start_index
+      return
+    end    
+
+    
+    max_element = inorder_array[start_index..end_index].max
+    
+    p start_index
+    p end_index
+    p max_element
+    p "========================="
+    node = Node.new max_element
+
+    if start_index == end_index
+      return node
+    end
+
+    index = inorder_array.index(max_element)
+    p "==========="
+    node.left = build_special_tree_from_inorder_traversal(inorder_array, start_index, index - 1)
+    p index
+    node.right = build_special_tree_from_inorder_traversal(inorder_array, index + 2, inorder_array.length - 1)
+
+    return node
+
+  end
+
+  def build_special_tree
+
   end
 
 
