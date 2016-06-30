@@ -393,6 +393,23 @@ class BinaryTree
     end
   end
 
+  def vertical_sum(node = self.root, hash = {}, index = 0)
+    if node.nil?
+      return
+    end
+
+    if hash[index].nil?
+      hash[index] = node.data
+    else
+      hash[index] += node.data
+    end
+
+    vertical_sum(node.left, hash, index - 1)
+    vertical_sum(node.right, hash, index + 1)
+
+    return Hash[hash.sort_by{|k,v| k}].values
+  end
+
 
   def self.dummy_tree
     b = BinaryTree.new 1
