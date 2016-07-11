@@ -438,7 +438,7 @@ class BinaryTree
 
 
   def self.build_special_tree_from_inorder_traversal(inorder_array, start_index = 0, end_index = inorder_array.length - 1)
-    if end_index < start_index
+    if end_index <  start_index
       return
     end    
 
@@ -467,6 +467,68 @@ class BinaryTree
 
   def build_special_tree
 
+  end
+
+  def self.is_subtree(pre_array, sub_pre_array, subindex = 0, preindex = nil)
+    if sub_pre_array[subindex].nil?
+      return true
+    end
+
+    if preindex.nil?
+      preindex = pre_array.index(sub_pre_array[subindex])
+    end
+  
+
+    if !preindex.nil?
+      pre_array[preindex] == sub_pre_array[subindex] and is_subtree(pre_array, sub_pre_array, subindex + 1, preindex + 1)
+    else
+      p "#{sub_pre_array[subindex]} is not found in #{pre_array}"
+      return false
+    end
+  end
+
+
+
+  # TODO : To be fixed.. Bored for now.
+  def is_complete
+    bool = true
+    (1..height).each do |level|
+      bool = check_if_complete(root, level)
+      break if !bool
+    end
+
+    bool
+  end
+
+  def check_if_complete(node, level)
+    if node.nil?
+      return true
+    end
+
+    if level == 1
+      return ((node.left.nil? and node.right.nil?) or (!node.left.nil? and !node.right.nil?) or (!node.left.nil?))
+    end
+
+    if level > 1
+      check_if_complete(node.left, level - 1) and check_if_complete(node.right, level - 1)      
+    end
+  end
+
+  def boundary_traversal
+    array = [root.data]
+    array << print_left_boundary(root.left, array)
+
+    p array
+  end
+
+  def print_left_boundary(node, array)
+
+    p node
+    array << node.data 
+    
+    if !node.left.nil?
+      print_left_boundary(node.left, array)
+    end
   end
 
 
