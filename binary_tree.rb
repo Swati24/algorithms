@@ -516,18 +516,39 @@ class BinaryTree
 
   def boundary_traversal
     array = [root.data]
-    array << print_left_boundary(root.left, array)
-
+    print_left_boundary(root.left, array)
+    print_leaf_nodes(root, array)
+    print_right_boundary(root.right, array)
     p array
   end
 
   def print_left_boundary(node, array)
-
-    p node
-    array << node.data 
+    array << node.data if !array.include?(node.data)
     
     if !node.left.nil?
       print_left_boundary(node.left, array)
+    end
+  end
+
+  def print_right_boundary(node, array)
+    if !node.right.nil?
+      print_left_boundary(node.right, array)
+    end
+
+    array << node.data if !array.include?(node.data)
+  end
+
+  def print_leaf_nodes(node, array)
+    if node.nil?
+      return
+    end
+
+    if node.left.nil? and node.right.nil?
+      array << node.data if !array.include?(node.data)
+      return
+    else
+      print_leaf_nodes(node.left, array)
+      print_leaf_nodes(node.right, array)
     end
   end
 
