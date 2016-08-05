@@ -1,4 +1,4 @@
-class Node
+  class Node
 
   attr_accessor :low, :equal, :high, :value
 
@@ -69,6 +69,8 @@ class TernarySearchTree
   def search(value, node )
 
   end
+
+
 
 
 

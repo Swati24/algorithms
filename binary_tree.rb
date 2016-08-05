@@ -604,6 +604,84 @@ class BinaryTree
 
   end
 
+  def get_character(value)
+    if value.to_i > 26
+      nil
+    else
+      (96 + value.to_i).chr
+    end
+  end
+
+  def get_data(node, integer_string)
+    if node.data != '' and !node.data.nil?
+      val = get_character(integer_string)
+      if val.nil?
+        nil
+      else
+        [node.data, val].join
+      end
+    else
+      get_character(integer_string)
+    end
+  end
+
+
+  def self.array_interpretations(array)
+    b = BinaryTree.new(nil)
+    b.root = b.insert_interpretations(array)
+
+    out_array = b.print_interpretations
+
+    p out_array
+  end
+
+
+  def print_interpretations(array = [], node = self.root)
+    if node.left.nil? and node.right.nil?
+      array << node.data
+      return array
+    end
+
+    unless node.left.nil?
+      print_interpretations(array, node.left)
+    end
+
+    unless node.right.nil?
+      print_interpretations(array, node.right)
+    end
+
+    array
+  end
+
+
+  def insert_interpretations(array, value = nil)
+    if array.nil?
+      return nil
+    end
+
+    if value.nil?
+      if @root.data.nil?
+        node = Node.new("")
+        @root = node
+      else
+        node = nil
+      end
+    else
+      node = Node.new(value)
+    end
+
+
+    unless node.nil?
+      p value
+      p node
+
+      node.left = insert_interpretations(array[1..-1], get_data(node, array[0]))
+      node.right = insert_interpretations(array[2..-1], get_data(node, array[0..1].join))
+    end
+
+    node
+
+  end
 
 
   def self.dummy_tree
@@ -623,6 +701,8 @@ class BinaryTree
 
     b
   end
+
+
 
 
 
