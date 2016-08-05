@@ -66,6 +66,12 @@ class TernarySearchTree
   end
 
 
+  def search(value, node )
+
+  end
+
+
+
 
 
 

@@ -16,7 +16,7 @@ class BinaryTree
 
   attr_accessor :root
 
-  def initialize(data, node)
+  def initialize(data, node = nil)
     if node.nil?
       @root = Node.new data
     else
@@ -134,9 +134,9 @@ class BinaryTree
       return 0
     else
       p node.data
-    end    
+    end
 
-    size(node.left) + 1 + size(node.right) 
+    size(node.left) + 1 + size(node.right)
   end
 
 
@@ -182,7 +182,7 @@ class BinaryTree
         node = array.pop
       end
     end
-    
+
     if !node.left.nil?
       root_to_leaf_paths(array, node.left)
     end
@@ -211,7 +211,7 @@ class BinaryTree
     end
 
     convert_to_children_sum_property(node.left)
-    convert_to_children_sum_property(node.right) 
+    convert_to_children_sum_property(node.right)
 
     left_data = !node.left.nil? ? node.left.data : 0
     right_data = !node.right.nil? ? node.right.data : 0
@@ -252,7 +252,7 @@ class BinaryTree
   #   end
 
   #   root_to_leaf_path
-  # end 
+  # end
 
 
   def self.build_tree(b, in_arr, pre_arr, start_index, end_index, pre_index = 0)
@@ -261,14 +261,14 @@ class BinaryTree
     end
 
     element = pre_arr[pre_index]
-    
+
     if pre_index == 0
       b = BinaryTree.new element
       node = b.root
     else
       node = Node.new element
     end
-    
+
     pre_index += 1
     in_index = in_arr.index(element)
 
@@ -282,7 +282,7 @@ class BinaryTree
     return node
   end
 
-  
+
   def print_root_to_leaf_path(array = [], node = root)
     root_to_leaf_path(array, node, 0)
   end
@@ -290,7 +290,7 @@ class BinaryTree
 
   def root_to_leaf_path(array, node, path_length)
     if node.nil?
-      return 
+      return
     end
 
     array[path_length] =  node
@@ -326,7 +326,7 @@ class BinaryTree
     node.left = Node.new(node.data)
 
     if !temp.nil?
-      node.left.left = temp      
+      node.left.left = temp
     end
   end
 
@@ -384,10 +384,10 @@ class BinaryTree
     if node.nil?
       return
     end
-    
+
     array[level] = node.data
     level += 1
-  
+
     if node.data == key
       array.each_with_index { |element, index| p element if index < (level - 1)}
       return
@@ -420,11 +420,11 @@ class BinaryTree
     end
 
     #return if !array[index].nil? and array[index] > node.data
-    
+
     array[index] = node.data
-    
+
     p index
-    sum = array[0..index].inject(:+)     
+    sum = array[0..index].inject(:+)
     p max_sum = max_sum < sum ? sum : max_sum
 
     p "--------"
@@ -440,11 +440,11 @@ class BinaryTree
   def self.build_special_tree_from_inorder_traversal(inorder_array, start_index = 0, end_index = inorder_array.length - 1)
     if end_index <  start_index
       return
-    end    
+    end
 
-    
+
     max_element = inorder_array[start_index..end_index].max
-    
+
     p start_index
     p end_index
     p max_element
@@ -477,7 +477,7 @@ class BinaryTree
     if preindex.nil?
       preindex = pre_array.index(sub_pre_array[subindex])
     end
-  
+
 
     if !preindex.nil?
       pre_array[preindex] == sub_pre_array[subindex] and is_subtree(pre_array, sub_pre_array, subindex + 1, preindex + 1)
@@ -510,7 +510,7 @@ class BinaryTree
     end
 
     if level > 1
-      check_if_complete(node.left, level - 1) and check_if_complete(node.right, level - 1)      
+      check_if_complete(node.left, level - 1) and check_if_complete(node.right, level - 1)
     end
   end
 
@@ -524,7 +524,7 @@ class BinaryTree
 
   def print_left_boundary(node, array)
     array << node.data if !array.include?(node.data)
-    
+
     if !node.left.nil?
       print_left_boundary(node.left, array)
     end
@@ -553,6 +553,59 @@ class BinaryTree
   end
 
 
+  def reverse_level_order_traversal(node = self.root)
+    height = height
+
+    array = []
+
+    (1..4).to_a.reverse.each do |level|
+      print_traversal(node, level, array)
+    end
+
+    p array
+  end
+
+  def print_traversal(node, level, array = [])
+    if node.nil?
+      return array
+    end
+
+    if level == 1
+      array << node.data
+    end
+
+    if level > 1
+      print_traversal(node.left, level - 1, array)
+      print_traversal(node.right, level - 1, array)
+    end
+  end
+
+
+  def self.isomorphic(n1, n2)
+    if n1.nil? and n2.nil?
+      return true
+    end
+
+    if n1.nil? or n2.nil?
+      return false
+    end
+
+
+    p n1.data
+    p n2.data
+
+
+
+    if n1.data == n2.data
+      (isomorphic(n1.left, n2.left) || isomorphic(n1.left, n2.right)) && (isomorphic(n1.right, n2.right) || isomorphic(n1.right, n2.left))
+    else
+      return false
+    end
+
+  end
+
+
+
   def self.dummy_tree
     b = BinaryTree.new 1
     root = b.root
@@ -561,14 +614,17 @@ class BinaryTree
     root.left.left = Node.new 4
     root.left.right = Node.new 5
     root.left.right.left = Node.new 6
-    
+
     root.right.left = Node.new 7
     root.right.left.left = Node.new 8
     root.right.left.right = Node.new 9
-    
+
     root.left.left.right = Node.new 10
 
     b
   end
+
+
+
 
 end
