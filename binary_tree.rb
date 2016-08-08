@@ -16,11 +16,13 @@ class BinaryTree
 
   attr_accessor :root
 
-  def initialize(data, node = nil)
-    if node.nil?
+  def initialize(data = nil, node = nil)
+    if !data.nil?
       @root = Node.new data
-    else
+    elsif !node.nil?
       @root = node
+    else
+      @root = nil
     end
   end
 
@@ -681,6 +683,145 @@ class BinaryTree
 
     node
 
+  end
+
+  def deepest_odd_level_depth(node = self.root, level = 1, depth = 0)
+
+    if node.nil?
+      return 0
+    end
+
+    if node.left.nil? and node.right.nil?
+      unless level % 2 == 0
+        return depth = level if depth < level
+      else
+        return 0
+      end
+    end
+
+    ldepth = deepest_odd_level_depth(node.left, level + 1, depth)
+    rdepth = deepest_odd_level_depth(node.right, level + 1, depth)
+
+    [ldepth, rdepth].max
+  end
+
+
+  # TODO = FIX THIS
+  def leaves_at_same_level(node = self.root, depth = 0, level = 0)
+    if node.nil?
+      return 0
+    end
+
+    if node.left.nil? and node.right.nil?
+      p depth = level
+    end
+
+    leaves_at_same_level(node.left, depth, level + 1)
+
+    depth
+
+  end
+
+  def left_view(node = self.root, print_bool = true)
+    if node.nil?
+      return
+    end
+
+    p node.data if print_bool
+
+    left_view(node.left, true)
+    left_view(node.right, false)
+
+  end
+
+
+  def path_sum_should_match(value, node = self.root, array = [], index = 0)
+    if node.nil?
+      return
+    end
+
+    array[index] = node.data
+
+    if node.left.nil? and node.right.nil?
+      if array[0..index].inject(:+) < value
+        p array[0..index].join(" -> ")
+      end
+    end
+
+    path_sum_should_match(value, node.left, array, index + 1)
+    path_sum_should_match(value, node.right, array, index + 1)
+
+  end
+
+
+  def sum_of_numbers(node = self.root, array = [], index = 0, sum = 0)
+    if node.nil?
+      return sum
+    end
+
+    array[index] = node.data
+
+    if node.left.nil? and node.right.nil?
+      p array[0..index].join(" -> ")
+      sum = sum + array[0..index].join.to_i
+    end
+
+    sum = sum_of_numbers(node.left, array, index + 1, sum)
+    sum = sum_of_numbers(node.right, array, index + 1, sum)
+  end
+
+
+  def print_in_vertical_order
+    hash = hash_in_vertical_order
+
+    hash.keys.sort.each do |key|
+      p hash[key].join('   ')
+      p "---------------"
+    end
+  end
+
+  def hash_in_vertical_order(hash = {}, node = root, index = 0)
+    if node.nil?
+      return
+    end
+
+    if hash[index]
+      hash[index] << node.data
+    else
+      hash[index] = [node.data]
+    end
+
+    hash_in_vertical_order(hash, node.left, index - 1)
+    hash_in_vertical_order(hash, node.right, index + 1)
+
+
+    hash
+
+  end
+
+  def construct_tree_from_in_and_lot(in_array, lot_array, lot_index = 0)
+    p "============"
+    p in_array
+    p lot_array
+    p lot_index
+    p element = lot_array[lot_index]
+
+    p in_index = in_array.index(element)
+
+    if element.nil?
+      return
+    end
+
+    p "I am here"
+    node = Node.new(element)
+
+    if in_index > 0
+      node.left = construct_tree_from_in_and_lot(in_array[0..(in_index - 1)], lot_array.inject([]) {|arr, e| arr << e if in_array[0..(in_index - 1)].include?(e); arr}, lot_index)
+      node.right = construct_tree_from_in_and_lot(in_array[(in_index + 1)..-1], lot_array.inject([]) {|arr, e| arr << e if in_array[(in_index + 1)..-1].include?(e); arr}, lot_index)
+    end
+
+
+    node
   end
 
 
