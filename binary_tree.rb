@@ -824,6 +824,83 @@ class BinaryTree
     node
   end
 
+  def closest_leaf(request_node, node = self.root, ancestors = [])
+    if node.nil?
+      return
+    end
+
+    ancestors << node
+
+    if node == request_node
+      distance = closest_leaf_via_children(request_node, 0)
+
+      start_index = ancestors.index(node)
+      ancestor_array = ancestors.slice(0, start_index).reverse
+
+      ancestor_array.each_with_index do |ancestor_node, index|
+        ancestor_node.data
+        distance_via_ancestor = (start_index - index) + closest_leaf_via_children(ancestor_node, 0)
+
+        distance = distance_via_ancestor < distance ? distance_via_ancestor : distance
+      end
+
+      p distance
+    else
+      closest_leaf(request_node, node.left, ancestors)
+      closest_leaf(request_node, node.right, ancestors)
+    end
+  end
+
+  def closest_leaf_via_children(node, distance)
+    if node.nil?
+      return 878789
+    end
+
+    if node.left.nil? and node.right.nil?
+      return distance
+    end
+
+    ldistance = closest_leaf_via_children(node.left, distance + 1)
+    rdistance = closest_leaf_via_children(node.right, distance + 1)
+
+    if ldistance < rdistance
+      ldistance
+    else
+      rdistance
+    end
+  end
+
+
+  def print_top_view
+    height = height(root)
+
+    hash = {}
+
+    (1..height).each do |level|
+      hash = top_view(root, hash, level, 0)
+    end
+
+    hash.values
+  end
+
+
+  def top_view(node, hash, level, index)
+    if node.nil?
+      return
+    end
+
+    if level == 1
+      hash[index] = node.data if hash[index].nil?
+    end
+
+    if level > 1
+      top_view(node.left, hash, level - 1, index - 1)
+      top_view(node.right, hash, level - 1, index + 1)
+    end
+
+    hash
+  end
+
 
   def self.dummy_tree
     b = BinaryTree.new 1
