@@ -901,6 +901,36 @@ class BinaryTree
     hash
   end
 
+  def print_bottom_view
+    height = height(root)
+
+    hash = {}
+
+    (1..height).each do |level|
+      hash = bottom_view(root, hash, level, 0)
+    end
+
+    return Hash[hash.sort_by{|k,v| k}].values
+  end
+
+
+  def bottom_view(node, hash, level, index)
+    if node.nil?
+      return
+    end
+
+    if level == 1
+      hash[index] = node.data
+    end
+
+    if level > 1
+      bottom_view(node.left, hash, level - 1, index - 1)
+      bottom_view(node.right, hash, level - 1, index + 1)
+    end
+
+    hash
+  end
+
 
   def self.dummy_tree
     b = BinaryTree.new 1
