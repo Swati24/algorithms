@@ -931,6 +931,102 @@ class BinaryTree
     hash
   end
 
+  def print_specific_level_order_traversal
+    height = height(root)
+
+    array = [ root.data ]
+
+    (1..height).each do |level|
+      specific_level_order_traversal(root.left, root.right, array, level)
+    end
+
+    p array
+  end
+
+  def specific_level_order_traversal(left_node, right_node, array, level)
+    if left_node.nil? and right_node.nil?
+      return
+    end
+
+    if level == 1
+      array << left_node.data
+      array << right_node.data
+    end
+
+    if level > 1
+      specific_level_order_traversal(left_node.left, right_node.right, array, level - 1)
+      specific_level_order_traversal(left_node.right, right_node.left, array, level - 1)
+    end
+  end
+
+
+  # TODO - Complete this.
+  def down_right_representation(node = self.root, b)
+    if node.nil?
+      return
+    end
+
+    b.root = node
+
+    b.root.left = down_right_representation(node.left, new_node.left)
+    b.root.right = down_right_representation(node.right, new_node.right)
+
+    node
+  end
+
+  def remove_half_node(node = self.root)
+    if node.nil?
+      return nil
+    end
+
+    if !node.left.nil?
+      node.left = remove_half_node(node.left)
+    end
+
+    if !node.right.nil?
+      node.right = remove_half_node(node.right)
+    end
+
+    if (node.left.nil? and node.right.nil?) or (!node.left.nil? and !node.right.nil?)
+      p "full node - > #{node.data}"
+      node
+    else
+      p "half node - > #{node.data}"
+
+      p node.left if !node.left.nil?
+      p node.right if !node.right.nil?
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   def self.dummy_tree
     b = BinaryTree.new 1
