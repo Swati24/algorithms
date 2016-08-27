@@ -37,14 +37,19 @@ class LinkedList
   end
 
   def insert_at_end(data)
-    temp = head
-    while(temp.next)
-      temp = temp.next
+    if head.nil?
+      @head = Node.new(data)
+    else
+
+      temp = head
+      while(temp.next)
+        temp = temp.next
+      end
+
+      temp.next = Node.new(data)
+
+      head
     end
-
-    temp.next = Node.new(data)
-
-    head
   end
 
   def delete_by_value(value)
@@ -140,6 +145,39 @@ class LinkedList
     head
   end
 
+  def get_nth_node(position, node = head, index = 0)
+    if node.nil?
+      return false
+    end
+
+    if position == index
+      return node.data
+    end
+
+    get_nth_node(position, node.next, index + 1)
+  end
+
+  def occurences(value, node = head)
+    if node.nil?
+      return 0
+    end
+
+    if node.data == value
+      1 + occurences(value, node.next)
+    else
+      occurences(value, node.next)
+    end
+
+  end
+
+  def middle(first = head, second = head)
+    if second.nil? or second.next.nil?
+      return first
+    end
+
+    middle(first.next, second.next.next)
+  end
+
   def search(value, node = head)
     if node.nil?
       return false
@@ -150,6 +188,90 @@ class LinkedList
     end
 
     search(value, node.next)
+  end
+
+  def reverse_using_another_linked_list(l = LinkedList.new, node = head)
+    if node.nil?
+      return l
+    end
+    l.insert_in_front(node.data)
+    reverse(l, node.next)
+  end
+
+
+  def reverse(curr = head, prev = nil)
+    if curr.nil?
+      @head = prev
+      return @head
+    end
+
+    temp = curr.next
+    curr.next = prev
+
+    reverse(temp, curr)
+  end
+
+  def self.merge_sorted_lists(node1, node2)
+    if node1.nil?
+      return node2
+    elsif node2.nil?
+      node1
+    end
+
+    if node1.data <= node2.data
+      result = node1
+      result.next = merge_sorted_lists(node1.next, node2)
+    else
+      result = node2
+      result.next = merge_sorted_lists(node1, node2.next)
+    end
+
+    result
+  end
+
+  def insert_in_sorted_way(value, curr = head, prev = nil)
+    temp = Node.new(value)
+
+    if curr.nil?
+      @head = temp
+      return @head
+    end
+
+    if value < curr.data
+      if !prev.nil?
+        prev.next = temp
+      else
+        @head = temp
+      end
+      temp.next = curr
+      return head
+    end
+
+    insert_in_sorted_way(value, curr.next, curr)
+  end
+
+  def print_reverse(node = head)
+    if node.nil?
+      return
+    end
+    print_reverse(node.next)
+
+    p node.data
+  end
+
+  def remove_duplicates(node = head, prev_value = nil)
+    if node.nil?
+      return
+    end
+
+    node.next = remove_duplicates(node.next, node.data)
+
+    if prev_value.nil? or prev_value < node.data
+      node
+    else
+      node.next
+    end
+
   end
 
   def print
