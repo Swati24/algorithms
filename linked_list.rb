@@ -271,8 +271,298 @@ class LinkedList
     else
       node.next
     end
+  end
+
+  def swap_2(node = head, prev = nil)
+    if node.nil? or node.next.nil?
+      return head
+    end
+
+    temp = node.next.next
+    curr = node.next
+    curr.next = node1
+    node.next = temp
+
+    if prev.nil?
+      @head = curr
+    else
+      prev.next = curr
+    end
+
+    swap_2(node.next, node)
+  end
+
+  def self.intersection(node1, node2)
+    if node1.nil? or node2.nil?
+      return
+    end
+
+    if node1.data < node2.data
+      return intersection(node1.next, node2)
+    elsif node2.data < node1.data
+      return intersection(node1, node2.next)
+    end
+
+    temp = Node.new(node1.data)
+    temp.next = intersection(node1.next, node2.next)
+
+    temp
+  end
+
+  def delete_alternate_nodes(node = head)
+    if node.nil? or node.next.nil?
+      return node
+    end
+
+    node.next = delete_alternate_nodes(node.next.next)
+
+    node
+  end
+
+  # Fix this
+  def alternate_lists(node = head, l1, l2)
+    if node.nil? or node.next.nil?
+      return node
+    end
+
+    temp = Node.new(node.data)
+    temp.next = alternate_lists(node.next.next, l1, l2)
+
+    if node.nil? or node.next.nil? or node.next.next.nil?
+      return node
+    end
+
+    temp1 = Node.new(node.next.data)
+    temp1.next = alternate_lists(node.next.next.next, l1, l2)
+
+    l1.head = temp
+    l2.head = temp1
+  end
+
+  def self.identical(node1, node2)
+    if (node1.nil? and !node2.nil?) or (!node1.nil? and node2.nil?)
+      return false
+    elsif node1.nil? and node2.nil?
+      return true
+    end
+
+    node1.data == node2.data and identical(node1.next, node2.next)
+  end
+
+
+  def reverse_in_groups(k, node = head)
+    curr = node
+    prev = nil
+    temp = nil
+    index = 0
+    while(index < k and curr)
+      temp = curr.next
+      curr.next = prev
+      prev = temp
+
+      index += 1
+    end
+
+    if temp.nil?
+      node.next = reverse_in_groups(k, temp.next)
+    end
+
+    node
+  end
+
+  def delete_notes_with_greater_value_on_right(node = head, prev = nil)
+    if node.nil? or node.next.nil?
+      return head
+    end
+
+    temp = node.next
+    if node.data < temp.data
+      if prev.nil?
+        @head = temp
+      else
+        prev.next = temp
+      end
+
+      p head
+    else
+      prev = node
+    end
+
+    delete_notes_with_greater_value_on_right(temp, prev)
+  end
+
+  def even_before_odd(node = head, prev = nil, start_node = nil)
+    if node.nil?
+      return @head
+    end
+
+    if node.data % 2 != 0
+      return even_before_odd(node.next, node, start_node)
+    end
+
+    if prev.nil? or (prev == start_node)
+      return even_before_odd(node.next, node, node)
+    end
+
+    if start_node.nil?
+      temp = head
+      @head = node
+    else
+      temp = start_node.next
+      start_node.next = node
+    end
+
+    prev.next = node.next
+    node.next = temp
+    even_before_odd(node.next, node, node)
+  end
+
+  def self.add_2_numbers(node1, node2, carry = 0)
+    if node1.nil? and node2.nil?
+      return
+    end
+
+    data_1 = node1.data rescue 0
+    data_2 = node2.data rescue 0
+
+    sum = data_1 + data_2 + carry
+    sum, carry = sum >= 10 ? [sum % 10, sum/10] : [sum , 0]
+    node = Node.new(sum)
+
+
+    if node1.nil? and !node2.nil?
+      node.next = add_2_numbers(node1.next, nil, carry)
+    elsif !node1.nil? and node2.nil?
+      node.next = add_2_numbers(node1.next, nil, carry)
+    else
+      node.next = add_2_numbers(node1.next, node2.next, carry)
+    end
+
+    node
+  end
+
+  def rotate(k, node = head, prev = nil, index = 0)
+    if node.nil?
+      return nil
+    end
+
+    if index == k
+      if head.nil?
+        return
+      end
+
+      if head == node
+        return head
+      end
+
+      temp = node
+      while(!temp.next.nil?)
+        temp = temp.next
+      end
+
+      temp.next = head
+      @head = node
+      prev.next = nil
+
+      return @head
+    end
+
+    rotate(k, node.next, node, index + 1)
 
   end
+
+
+  # TODO - Complete this
+  def self.add_2_numbers_from_start(list1, list2)
+    node, carry = add_lists_from_start(list1.head, list2.head)
+    if !carry.nil?
+      temp = Node.new carry
+      temp.next = node
+      node = temp
+    end
+
+    node
+  end
+
+  def self.add_lists_from_start(node1, node2)
+    if node1.nil? and node2.nil?
+      return
+    end
+
+    node = Node.new ''
+    node.next, carry = add_lists_from_start(node1.next, node2.next)
+
+    if carry.nil?
+      carry = 0
+    end
+
+    sum = node1.data + node2.data + carry
+    sum, carry = sum >= 10 ? [sum % 10, sum/10] : [sum , 0]
+
+    node.data = sum
+    return [node, carry]
+  end
+
+  def delete_n_nodes_after_m_nodes(m, n, node = head, index = 0)
+    if node.nil?
+      return
+    end
+
+    if index != 0 and index % m == 0
+      start_ptr = 0
+      while(start_ptr < n)
+        return if node.nil?
+        node = node.next
+        start_ptr += 1
+      end
+      index = 0
+    end
+
+    return if node.nil?
+
+    node.next = delete_n_nodes_after_m_nodes(m, n, node.next, index + 1)
+    node
+  end
+
+  # TODO
+  def self.merge_2_lists_at_alternate_positions(node1, node2, length, index = 0, ptr = 0)
+    if node1.nil?
+      return
+    end
+
+    node = ptr == 0 ? node1 : node2
+    p node
+
+    if ptr == 0
+      node1 = node1.next
+      node2 = node2
+    else
+      node1 = node1
+      node2 = node2.next
+    end
+
+    ptr = ptr == 0 ? 1 : 0
+
+    merge_2_lists_at_alternate_positions(node1, node2, length, index + 1, ptr)
+
+    node
+  end
+
+  def self.maximum_sum_linked_list(node1, node2, sum1, sum2)
+    if node1.nil? and node2.nil?
+      return
+    end
+
+
+    p node_data = sum1 >= sum2 ? node1.data : node2.data
+    node = Node.new node_data
+    node.next = maximum_sum_linked_list(node1.next, node2.next, sum1 - node1.data, sum2 - node2.data)
+
+    p node
+    node
+  end
+
+
 
   def print
     temp = head
