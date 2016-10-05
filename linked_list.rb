@@ -170,7 +170,7 @@ class LinkedList
 
   end
 
-  def middle(first = head, second = head)
+  def middle(first = head, second = head.next)
     if second.nil? or second.next.nil?
       return first
     end
@@ -562,7 +562,144 @@ class LinkedList
     node
   end
 
+  def swap_nodes(val1, val2)
+    curr1 = head
+    prev1 = nil
 
+    while (curr1.data != val1 and curr1)
+      prev1 = curr1
+      curr1 = curr1.next
+    end
+
+    curr2 = head
+    prev2 = nil
+
+    while (curr2.data != val2 and curr2)
+      prev2 = curr2
+      curr2 = curr2.next
+    end
+
+    prev1.next = curr2
+    temp = curr2.next
+    curr2.next = curr1.next
+
+    prev2.next = curr1
+    curr1.next = temp
+
+    head
+  end
+
+  def nth_node_from_end(n)
+    slow = head
+    fast = head
+
+    index = 1
+
+    while(index < n and fast)
+      fast = fast.next
+      index += 1
+    end
+
+    p fast
+
+    while(fast and fast.next)
+      slow = slow.next
+      fast = fast.next
+    end
+
+    slow
+  end
+
+  def self.intersection_of_2_sorted_linked_list(node1, node2)
+    if node1.nil? or node2.nil?
+      return
+    end
+
+    if node1.data < node2.data
+      return intersection_of_2_sorted_linked_list(node1.next, node2)
+    elsif node1.data > node2.data
+      return intersection_of_2_sorted_linked_list(node1, node2.next)
+    end
+
+    result = Node.new node1.data
+    result.next = intersection_of_2_sorted_linked_list(node1.next, node2.next)
+
+    result
+  end
+
+  def divide_list(slow = node)
+    fast = slow.next
+
+  end
+
+
+  def merge_sort(node = head)
+    if node.nil? or node.next.nil?
+      return node
+    end
+
+    middle = self.middle(node, node.next)
+    temp = middle.next
+    middle.next = nil
+
+    first = node
+    second = temp
+
+    first = merge_sort(first)
+    p "First List -"
+    p first
+    second = merge_sort(second)
+    p "Second List -"
+    p second
+    p "===================="
+
+    first = LinkedList.sorted_merge(first, second)
+
+    return first
+
+  end
+
+  def self.sorted_merge(node1, node2)
+    if node1.nil? and node2.nil?
+      return
+    end
+
+    if node1.nil?
+      node = Node.new(node2.data)
+      node.next = sorted_merge(nil, node2.next)
+    elsif node2.nil?
+      node = Node.new(node1.data)
+      node.next = sorted_merge(node1.next, nil)
+    elsif node1.data <= node2.data
+      node = Node.new(node1.data)
+      node.next = sorted_merge(node1.next, node2)
+    elsif node1.data > node2.data
+      node = Node.new(node2.data)
+      node.next = sorted_merge(node1, node2.next)
+    end
+
+
+    node
+  end
+
+
+  def reverse_at_nth_position(n, node = head, index = 1)
+    if node.nil?
+      return
+    end
+
+    while(index <= n)
+      node = node.next
+      index += 1
+    end
+
+    node.next = reverse_at_nth_position(n, node.next, index)
+
+    p node
+
+    node
+
+  end
 
   def print
     temp = head
