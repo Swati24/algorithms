@@ -683,6 +683,69 @@ class LinkedList
   end
 
 
+  def swap_nodes_2(node = head)
+    if node.nil? or node.next.nil?
+      return node
+    end
+
+    p "=========="
+    p next_node = node.next
+    p temp = next_node.next
+    p next_node.next = node
+
+    if head == node
+      @head = next_node
+    end
+
+    p node.next = swap_nodes_2(temp)
+
+    next_node
+  end
+
+  def add_1(node = head, carry = 0, add = 1)
+    if node.nil?
+      return
+    end
+
+    if node.next
+      carry, add = add_1(node.next)
+    end
+
+    p result = node.data + add + carry
+
+    if result >= 10
+      node.data = result % 10
+      carry = 1
+    else
+      node.data = result
+      carry = 0
+    end
+
+    p carry
+    p node
+
+    [carry, 0]
+  end
+
+  def reverse_2(node = head)
+    if node.nil?
+      return
+    end
+
+    node.next = reverse_2(node.next)
+  end
+
+
+  def self.create_dummy
+    l = LinkedList.new
+    a = l.head = Node.new 1
+    (2..7).to_a.each do |data|
+      a = a.next = Node.new data
+    end
+
+    l
+  end
+
   def reverse_at_nth_position(n, node = head, index = 1)
     if node.nil?
       return

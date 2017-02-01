@@ -1,37 +1,36 @@
 class Prog
 
-  attr_accessor :array
+  attr_accessor :array, :lis
 
   def initialize(array)
     @array = array
+    @lis = [[array[0]]]
   end
 
-
   def process
-    lis = []
-    lis[0] = [array[0]]
-
     i = 1
-    while(i < array.length)
-      j = 0
-      while(j < i)
-        lis[i] ||= []
-        if(array[j] < array[i] and lis[i].length < lis[j].length + 1)
-          lis[i] = lis[j].dup
-        end
 
-        j+= 1
+    while(i < array.length)
+
+      j = 0
+      while(j <= i)
+        p lis
+        @lis[i]||= []
+        if array[j] <= array[i]
+          @lis[i] << array[j]
+        end
+        j += 1
       end
 
-      lis[i].push(array[i])
-      p lis
       i += 1
     end
+
+    lis
   end
 
   def self.run
-    i = Prog.new([ 15, 27, 14, 38, 26, 55, 46, 65, 85])
-    i.process
+    p = Prog.new([ 1, 11, 2, 10, 4, 5, 2, 1])
+    p.process
   end
 
 end

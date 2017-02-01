@@ -999,10 +999,99 @@ class BinaryTree
   end
 
 
+  def self.construct_tree(inorder, preorder)
+    pre_index = 0
+    node = nil
+    root = nil
+
+    while(pre_index < preorder.length)
+      in_index = inorder.index(preorder[pre_index])
+
+      if node.nil?
+        root = node = Node.new preorder[pre_index]
+      else
+        node_index = inorder.index(node.data)
+
+        if in_index < node_index
+          node.left = Node.new preorder[pre_index]
+          node = node.left
+        else
+          node.right = Node.new preorder[pre_index]
+          node = node.right
+        end
+      end
+
+      pre_index += 1
+    end
+
+    root
+  end
 
 
+  def min_depth(node = root)
+    if node.nil?
+      return 0
+    end
+
+    if node.left.nil? and node.right.nil?
+      return 1
+    end
+
+    if node.left.nil?
+      return min_depth(node.right) + 1
+    end
+
+    if node.right.nil?
+      return min_depth(node.left) + 1
+    end
+
+    return [min_depth(node.left), min_depth(node.right)].min + 1
+  end
 
 
+  def is_mirror(node1 = root, node2 = root)
+    if node1.nil? and node2.nil?
+      return true
+    elsif (node1.nil? and !node2.nil?) or (!node1.nil? and node2.nil?)
+      return false
+    end
+
+    node1.data == node2.data and is_mirror(node1.left, node2.right) and is_mirror(node1.right, node2.left)
+  end
+
+
+  def left_leaves_sum(node = root, sum = 0)
+
+    if node.left.nil? and node.right.nil?
+      sum += node.data
+    end
+
+    left_leaves_sum(node.left)
+  end
+
+
+  def remove_half_nodes(node = root)
+    if node.nil?
+      return nil
+    end
+
+    if node.left.nil? and node.right.nil?
+      return node
+    end
+
+    if node.left.nil?
+      return remove_half_nodes(node.right)
+    end
+
+    if node.right.nil?
+       return remove_half_nodes(node.left)
+    end
+
+    node.left = remove_half_nodes(node.left)
+    node.right = remove_half_nodes(node.right)
+
+    node
+  end
 
 
 
